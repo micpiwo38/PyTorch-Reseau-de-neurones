@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/cosmo/bootstrap.min.css">
+    <title>PyTorch Fashion IA</title>
+</head>
+<body>
+    <div class="container shadow mt-5 p-3 rounder">
+        <h1 class="text-center text-info">Entrainer IA Fashion PyTorch</h1>
+
+    <div class="text-center">
+        <button class="btn btn-warning" onclick="runTest()" style="padding: 10px 20px; cursor: pointer;">Lancer un test aléatoire</button>
+    </div>
+
+    <br><br>
+
+    <div id="result-box">
+        <div class="text-center">
+            <p>Cliquez sur le bouton pour tester une image.</p>
+            <div id="display-area" style="display:none;">
+                <img id="item-img" src="" /><br>
+                <strong id="status"></strong><br>
+                <span>Prédiction : <b id="pred"></b></span><br>
+                <span>Réel : <b id="real"></b></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function runTest() {
+            const response = await fetch('/prediction-vetement');
+            const data = await response.json();
+
+            document.getElementById('display-area').style.display = 'block';
+            document.getElementById('item-img').src = "data:image/png;base64," + data.image;
+            document.getElementById('pred').innerText = data.prediction;
+            document.getElementById('real').innerText = data.actual;
+
+            const status = document.getElementById('status');
+            if(data.success) {
+                status.innerText = "✅ RÉUSSI !";
+                status.className = "success";
+            } else {
+                status.innerText = "❌ ÉCHEC";
+                status.className = "error";
+            }
+        }
+    </script>
+    </div>
+
+<script>
+    async function runTest(){
+        const response = await fetch('/prediction-vetement')
+        const data = await response.json();
+        document.getElementById('display-area').style.display = 'block';
+            document.getElementById('item-img').src = "data:image/png;base64," + data.image;
+            document.getElementById('pred').innerText = data.prediction;
+            document.getElementById('real').innerText = data.actual;
+
+            const status = document.getElementById('status');
+            if(data.success) {
+                status.innerText = "✅ RÉUSSI !";
+                status.className = "success";
+            } else {
+                status.innerText = "❌ ÉCHEC";
+                status.className = "error";
+            }
+    }
+</script>
+
+</body>
+</html>

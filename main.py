@@ -3,7 +3,9 @@ from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import datasets
 from torchvision.transforms import ToTensor
-
+import random
+#Biblihoteque pour l'affichage
+import matplotlib.pyplot as plt
 # ==========================================
 # 1. PRÉPARATION DES DONNÉES
 # ==========================================
@@ -138,7 +140,7 @@ torch.save(model.state_dict(), "model.pth")
 print("Le modele PyTorch a été sauvegarder dans le fichier model.pth")
 
 # ==========================================
-# 7. LE MODELE ENTRAINER TOUVE LE VETEMENT
+# 7. LE MODELE ENTRAINER TROUVE LE VETEMENT
 # ==========================================
 #Tableau de vetement disponible = 10 (catégories)
 classes = [
@@ -153,11 +155,26 @@ classes = [
     "Sac à main",
     "Chaussure femme"
 ]
-
+# ==========================================
+# 8. TEST D'IMAGE AU HASARD
+# ==========================================
+#Activer le mode évaluation
+# On reprend la logique de l'image au hasard
 model.eval()
-x,y = test_data[0][0], test_data[0][1]
+indice = random.randint(0, len(test_data) - 1)
+x, y = test_data[indice][0], test_data[indice][1]
+
 with torch.no_grad():
-    x = x.to(device)
-    pred = model(x)
-    predicted, actuel = classes[pred[0].argmax(0)], classes[y]
-    print(f"Dernière prédiction : {predicted}, actuel {actuel}")
+    x_device = x.to(device)
+    pred = model(x_device.unsqueeze(0))
+    predicted_name = classes[pred[0].argmax(0)]
+    actual_name = classes[y]
+
+#Partie Affichage
+plt.figure(figsize=(5, 5))
+# .squeeze() retire les dimensions inutiles pour l'affichage (1, 28, 28) -> (28, 28)
+plt.imshow(x.squeeze(), cmap="gray")
+plt.title(f"Prédiction: {predicted_name}\nVrai: {actual_name}", color=("green" if predicted_name == actual_name else "red"))
+plt.axis("off") # On cache les axes (0 à 28) pour faire plus joli
+plt.show()
+
